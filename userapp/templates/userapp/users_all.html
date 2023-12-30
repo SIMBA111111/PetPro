@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UsersAll</title>
+</head>
+<body>
+
+<div>Im - {{ auth_user }}</div>
+
+{% for user in users %}
+
+<a href="{% url 'profile' username=user.username %}">
+    <div>{{user.username}}</div>
+</a>
+
+{% endfor %}
+
+</body>
+</html>

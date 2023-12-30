@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AnyProfile</title>
+</head>
+<body>
+
+<form id="add-to-friend-form"> method="post" action="{% url 'profile' username=user.username %}">
+    {% csrf_token %}
+    <button formmethod="post" id="add-to-friend-btn">Добавить в друзья</button>
+</form>
+
+
+</body>
+
+<script>
+
+</script>
+
+</html>
