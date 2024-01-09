@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.views.generic import FormView
+from django.urls import reverse_lazy
+from django.views.generic import FormView, CreateView
 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +14,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from userapp import forms
 from userapp import serializers
 from userapp import models
+from chat.models import ChatModel
 
 User = get_user_model()
 
@@ -45,6 +48,9 @@ class GetFriendRequestsAPIVIEW(generics.RetrieveAPIView):
     lookup_field = "id"
 
 
+from django.db.models.query import EmptyQuerySet
+
+
 # Отправить заявку в друзья
 class SendFriendRequestAPIVIEW(generics.ListCreateAPIView):
     queryset = None
@@ -52,7 +58,25 @@ class SendFriendRequestAPIVIEW(generics.ListCreateAPIView):
     lookup_field = "username"
 
     def get(self, request, *args, **kwargs):
-        return render(request, "userapp/any_profile.html")
+        # print(args)
+        # print(kwargs)
+        username_other = kwargs["username"]
+
+        chat = ChatModel.objects.filter(
+            Q(username_one__username=username_other) | Q(username_one__username=request.user),
+            Q(username_two__username=username_other) | Q(username_two__username=request.user),
+        )
+        if not chat.exists():
+            print(chat)
+            user_other = User.objects.get(username=username_other)
+            print(user_other)
+            user_from = User.objects.get(username=request.user)
+            print(user_from)
+            ChatModel.objects.create(username_one=user_other, username_two=user_from)
+
+        print(chat[0])
+        return render(request, "userapp/any_profile.html",
+                      context={"username_other": username_other, "chat_number": chat[0].id})
 
     def post(self, request, *args, **kwargs):
         to_user_username = kwargs["username"]
@@ -107,3 +131,9 @@ class Login(FormView):
             return redirect("users-list")
         else:
             return Response()
+
+
+class Register(CreateView):
+    template_name = "userapp/register.html"
+    form_class = forms.RegisterForm
+    success_url = reverse_lazy("login")

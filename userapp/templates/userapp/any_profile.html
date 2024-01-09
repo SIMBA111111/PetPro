@@ -12,9 +12,41 @@
 </form>
 
 
+<!--<form id="open-chat" method="post">-->
+<!--    {% csrf_token %}-->
+<!--    <button form="open-chat">открыть чат</button>-->
+    <input id="room-name-submit" type="button" value="Открыть чат">
+
+<!--</form>-->
+
+{{ user.username|json_script:"username_my" }}  <!-- Добавлено имя пользователя -->
+{{ username_other|json_script:"username_other" }}
+{{ chat_number|json_script:"chat_number" }}
+
 </body>
 
 <script>
+        const username_my = JSON.parse(document.getElementById('username_my').textContent);  // Получение имени пользователя
+        const username_other = JSON.parse(document.getElementById('username_other').textContent);  // Получение имени пользователя
+        const chat_number = JSON.parse(document.getElementById('chat_number').textContent);  // Получение имени пользователя
+
+        console.log(username_my);
+        console.log(username_other);
+        console.log(chat_number);
+
+<!--        document.querySelector('#room-name-input').focus();-->
+<!--        document.querySelector('#room-name-input').onkeyup = function(e) {-->
+<!--            if (e.key === 'Enter') {  // enter, return-->
+<!--                document.querySelector('#room-name-submit').click();-->
+<!--            }-->
+<!--        };-->
+
+        document.querySelector('#room-name-submit').onclick = function(e) {
+<!--            var roomName = document.querySelector('#room-name-input').value;-->
+            window.location.pathname = '/chat/' + chat_number + '/';
+        };
+
+
 
 </script>
 

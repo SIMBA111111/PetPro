@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,8 @@ INSTALLED_APPS = [
 
 # apps
 INSTALLED_APPS += [
-    'userapp.apps.UserappConfig'
+    'userapp.apps.UserappConfig',
+    'chat.apps.ChatConfig',
 ]
 
 # packages
@@ -47,10 +49,12 @@ INSTALLED_APPS += [
     'rest_framework',
     'djoser',
     'rest_framework.authtoken',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -140,3 +144,18 @@ REST_FRAMEWORK = {
 
     ),
 }
+
+ASGI_APPLICATION = "config.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
