@@ -6,18 +6,28 @@
 </head>
 <body>
 
-<form id="add-to-friend-form"> method="post" action="{% url 'profile' username=user.username %}">
+<div>
+    <div>Im - {{ user }}</div>
+    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+
+</div>
+<br>
+
+Friend name - {{username_other}}
+
+<form id="add-to-friend-form" method="post" action="{% url 'profile' username=username_other %}">
     {% csrf_token %}
-    <button formmethod="post" id="add-to-friend-btn">Добавить в друзья</button>
+    <button id="add-to-friend-btn">Добавить в друзья</button>
 </form>
 
-
-<!--<form id="open-chat" method="post">-->
-<!--    {% csrf_token %}-->
-<!--    <button form="open-chat">открыть чат</button>-->
-    <input id="room-name-submit" type="button" value="Открыть чат">
-
-<!--</form>-->
+<input id="room-name-submit" type="button" value="Открыть чат">
 
 {{ user.username|json_script:"username_my" }}  <!-- Добавлено имя пользователя -->
 {{ username_other|json_script:"username_other" }}
@@ -45,6 +55,8 @@
 <!--            var roomName = document.querySelector('#room-name-input').value;-->
             window.location.pathname = '/chat/' + chat_number + '/';
         };
+
+
 
 
 

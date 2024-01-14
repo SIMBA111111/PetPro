@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
 }
 
 ASGI_APPLICATION = "config.asgi.application"
-
+ASGI_THREADS = 10
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",

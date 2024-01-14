@@ -6,6 +6,7 @@ class UserModel(AbstractUser):
     friends = models.ManyToManyField("self", blank=True, through="FriendshipModel", )
     # avatar = models.FileField
 
+
 class FriendshipModel(models.Model):
     id_user = models.ForeignKey(UserModel, models.SET_NULL, "user", null=True)
     id_other_user = models.ForeignKey(UserModel, models.SET_NULL, "other_user", null=True)

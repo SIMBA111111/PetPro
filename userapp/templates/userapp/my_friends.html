@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<style>
+#friend {
+    border: 2px solid #3498db; /* Цвет и толщина обводки */
+    padding: 10px; /* Отступ внутри элемента */
+    border-radius: 5px; /* Закругление углов */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Эффект выпуклости */
+    cursor: pointer; /* Изменение формы курсора при наведении */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Плавные переходы */
+}
+
+#friend:hover {
+    background-color: #ecf0f1; /* Цвет фона при наведении */
+}
+
+#friend:active {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); /* Эффект при нажатии */
+}
+
+
+</style>
+
+
+<body>
+
+<div>
+    <div>Im - {{ user }}</div>
+    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+
+</div>
+<br>
+
+{% for fr in friends %}
+<div id="friend" onclick="location.href='{% url 'profile' username=fr.id_other_user.username %}'">{{fr.id_other_user}}</div>
+{% endfor %}
+
+</body>
+</html>

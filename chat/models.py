@@ -20,4 +20,27 @@ class MessageModel(models.Model):
     text = models.CharField(max_length=255, )
     author = models.ForeignKey(User, models.DO_NOTHING, "author_messages")
     datetime = models.DateTimeField(auto_now_add=True)
-    chat_name = models.ForeignKey(ChatModel, models.CASCADE, "chat_name_messages")
+    chat_name = models.ForeignKey(ChatModel, models.CASCADE, "chat_name_messages", null=True, blank=True)
+    group_chat_name = models.ForeignKey("GroupChatModel", models.CASCADE, "group_chat_name_messages", null=True,
+                                        blank=True)
+
+
+class GroupChatModel(models.Model):
+    name = models.CharField(max_length=33, )
+    users = models.ManyToManyField(User, "group_chats", )
+    datetime_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.pk}'
+
+
+class RequestToAddGroupChatModel(models.Model):
+    group_chat_name = models.ForeignKey(GroupChatModel, models.CASCADE, "group_chats_name", )
+    from_user = models.ForeignKey(User, models.CASCADE, "from_user_request_add_to_group_chat", )
+    to_user = models.ForeignKey(User, models.CASCADE, "to_user_request_add_to_group_chat", )
+    accepted = models.BooleanField(default=False, )
+
+    # datetime_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [["group_chat_name", "to_user"], ]

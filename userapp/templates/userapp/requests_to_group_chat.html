@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>friend requests</title>
+    <title>Requests To Group Chat</title>
 </head>
 <body>
-
 
 <div>
     <div>Im - {{ user }}</div>
@@ -17,23 +16,24 @@
     <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
     <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
     <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+
 </div>
+<br>
 
 
-{% for d in data %}
+{% for dat in data %}
+<div>название чата: {{dat.group_chat_name.name}}</div>
+<div>от кого: {{dat.from_user}}</div>
 
-<div>{{ d.from_user }}</div>
-<div>{{ d.datetime }}</div>
-<div>{{ d.id }}</div>
-
-<form class="friend-action-form" data-from-user="{{ d.from_user }}" data-datetime="{{ d.datetime }}"
-      data-id="{{ d.id }}">
+<form class="friend-action-form" data-from-user="{{ dat.from_user }}"
+      data-id="{{ dat.id }}" data-group-chat-name="{{dat.group_chat_name}}">
     {% csrf_token %}
     <button type="button" class="friend-action-btn" data-action="accept">Принять</button>
     <button type="button" class="friend-action-btn" data-action="reject">Отклонить</button>
 </form>
 
 {% endfor %}
+
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
@@ -42,19 +42,20 @@
             event.preventDefault();
 
             var fromUser = $(this).closest(".friend-action-form").data("from-user");
-            var datetime = $(this).closest(".friend-action-form").data("datetime");
+            var GroupChatName = $(this).closest(".friend-action-form").data("group-chat-name");
+<!--            var datetime = $(this).closest(".friend-action-form").data("datetime");-->
             var id_request = $(this).closest(".friend-action-form").data("id");
             var actionType = $(this).data("action");
 
             $.ajax({
-                url: "/accept/",  // Замените на ваш реальный URL-адрес API
+                url: "/request-to-group-room/",  // Замените на ваш реальный URL-адрес API
                 type: "POST",
                 data: {
                     csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
                     from_user: fromUser,
-                    datetime: datetime,
                     id_request: id_request,
-                    action_type: actionType
+                    action_type: actionType,
+                    group_chat_name: GroupChatName
                 },
                 success: function(response) {
                     // Обработка успешного ответа от сервера
@@ -67,6 +68,8 @@
             });
         });
     });
+
+
 
 </script>
 

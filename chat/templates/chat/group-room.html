@@ -1,0 +1,105 @@
+<!-- chat_room.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>GroupChat Room</title>
+</head>
+<body>
+<div>
+    <div>Im - {{ user }}</div>
+    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+
+</div>
+<br>
+
+<div id="chat-log">
+    {% for message in messages %}
+    {{message.datetime}} {{message.author}}: {{message.text}} <br>
+    {% endfor %}
+</div>
+<input id="chat-message-input" type="text" size="100"><br>
+<input id="chat-message-submit" type="button" value="Send">
+
+
+<form data-group-room-name="group_room_name" class="form-for-add" method="post" action="{% url 'add' %}">
+    {% csrf_token %}
+    <div>Отправить приглашение:</div>
+    <input type="text" name="message">
+    <button class="btn-for-add" type="submit">Add</button>
+</form>
+<br>
+
+
+<div>
+    Список участников:
+</div>
+{% for group_chat in current_group_chat%}
+<div>{{group_chat}}</div>
+{% endfor %}
+
+{{ group_room_name|json_script:"room-name" }}
+{{ user.username|json_script:"user-name" }}  <!-- Добавлено имя пользователя -->
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    const userName = JSON.parse(document.getElementById('user-name').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/group/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        console.log(e);
+        const data = JSON.parse(e.data);
+        const message = `${data.author}: ${data.message}`;
+        document.querySelector('#chat-log').innerHTML += (message + '<br>');
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.key === 'Enter') {
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'author': userName,
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+
+    // Обработчик событий для отправки формы
+<!--    document.querySelector('form').addEventListener('submit', function(e) {-->
+<!--        e.preventDefault();-->
+<!--        const inputDom = document.querySelector('form input[type="text"]');-->
+<!--        const inputValue = inputDom.value;-->
+<!--        console.log('Форма отправлена со значением:', inputValue);-->
+<!--        inputDom.value = '';-->
+<!--    });-->
+
+
+
+</script>
+
+
+</body>
+</html>
