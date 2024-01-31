@@ -18,6 +18,7 @@ class ChatModel(models.Model):
 
 class MessageModel(models.Model):
     text = models.CharField(max_length=255, )
+    image = models.ImageField(upload_to="chat/static/images/%Y/%M/%D", blank=True, null=True)
     author = models.ForeignKey(User, models.DO_NOTHING, "author_messages")
     datetime = models.DateTimeField(auto_now_add=True)
     chat_name = models.ForeignKey(ChatModel, models.CASCADE, "chat_name_messages", null=True, blank=True)
