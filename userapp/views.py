@@ -1,4 +1,5 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
+from django.contrib.auth.models import AnonymousUser
 from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
@@ -17,6 +18,7 @@ from userapp import forms
 from userapp import serializers
 from userapp import models
 from chat.models import ChatModel, GroupChatModel, RequestToAddGroupChatModel
+from userapp.models import FriendRequests, FriendshipModel
 
 # from userapp.views import RequestToGroupRoom
 
@@ -45,7 +47,11 @@ class UsersAllAPIVIEW(APIView):
     queryset = User.objects.all()
     serializer_class = serializers.UsersAllSerializers
 
+
     def get(self, request, *args, **kwargs):
+        if isinstance(request.user, AnonymousUser):
+            return redirect("login")
+
         users = User.objects.exclude(username=request.user)
         return render(request, "userapp/users_all.html", context={"users": users})
 
@@ -86,18 +92,34 @@ class SendFriendRequestAPIVIEW(generics.ListCreateAPIView):
             Q(username_one__username=username_other) | Q(username_one__username=request.user),
             Q(username_two__username=username_other) | Q(username_two__username=request.user),
         )
+
         if not chat.exists():
             user_other = User.objects.get(username=username_other)
             user_from = User.objects.get(username=request.user)
             ChatModel.objects.create(username_one=user_other, username_two=user_from)
 
+        friendship_exist = FriendshipModel.objects.filter(
+            Q(id_user__username=username_other) | Q(id_user__username=request.user),
+            Q(id_other_user__username=username_other) | Q(id_other_user__username=request.user))
+
+        is_friend = None
+
+        if friendship_exist.exists():
+            is_friend = True
+
         return render(request, "userapp/any_profile.html",
-                      context={"username_other": username_other, "chat_number": chat[0].id})
+                      context={"username_other": username_other, "chat_number": chat[0].id, "is_friend": is_friend})
 
     def post(self, request, *args, **kwargs):
         to_user_username = kwargs["username"]
         to_user = User.objects.get(username=to_user_username)
         from_user = request.user
+
+        friendship_exist = FriendshipModel.objects.filter(Q(id_user=to_user) | Q(id_user=from_user),
+                                                          Q(id_other_user=to_user) | Q(id_other_user=from_user))
+        if friendship_exist.exists():
+            return HttpResponseNotFound()
+
         obj = models.FriendRequests.objects.create(to_user=to_user,
                                                    from_user=from_user,
                                                    )
@@ -191,3 +213,8 @@ class CreateGroupRoom(View):
         new_group_chat.users.add(request.user)
 
         return redirect("my-group-chats")
+
+
+def LogoutAccount(request):
+    logout(request)
+    return redirect("login")

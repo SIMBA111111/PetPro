@@ -1,22 +1,77 @@
-<!-- chat_room.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="UTF-8">
     <title>Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        #header .buttons {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #header .buttons button {
+            margin-right: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #chat-log {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        #chat-message-input {
+            width: calc(100% - 20px);
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #chat-message-submit {
+            width: calc(100% - 20px);
+            margin-top: 10px;
+            padding: 8px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<div>
+<div id="header">
     <div>Im - {{ user }}</div>
-    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
-    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
-    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
-    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
-    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
-    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
-
+    <div class="buttons">
+        <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+        <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+        <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+    </div>
 </div>
 <br>
 
@@ -25,56 +80,46 @@
     {{message.datetime}} {{message.author}}: {{message.text}} <br>
     {% endfor %}
 </div>
+
 <input id="chat-message-input" type="text" size="100"><br>
 <input id="chat-message-submit" type="button" value="Send">
 
 {{ room_name|json_script:"room-name" }}
-{{ user.username|json_script:"user-name" }}  <!-- Добавлено имя пользователя -->
+{{ user.username|json_script:"user-name" }}
 <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
-        const userName = JSON.parse(document.getElementById('user-name').textContent);  // Получение имени пользователя
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    const userName = JSON.parse(document.getElementById('user-name').textContent);
 
-        const chatSocket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/chat/'
-            + roomName
-            + '/'
-        );
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+    );
 
-<!--        обработчик события для веб-сокета, который срабатывает при получении нового сообщения от сервера. -->
-<!--        В этом обработчике данные сообщения преобразуются из JSON и выводятся в консоль браузера.-->
-        chatSocket.onmessage = function(e) {
-            console.log(e);
-            const data = JSON.parse(e.data);
-            const message = `${data.author}: ${data.message}`;  // Добавлено имя автора
-            document.querySelector('#chat-log').innerHTML += (message + '<br>');
-        };
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        const message = `${data.author}: ${data.message}`;
+        document.querySelector('#chat-log').innerHTML += (message + '<br>');
+    };
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
 
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function (e) {
+        if (e.key === 'Enter') {
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
 
-
-<!--        При нажатии на кнопку, отправляет данные на сервер -->
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'author': userName,  // Передача имени пользователя
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
-
-
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'author': userName,
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
 </script>
 </body>
 </html>

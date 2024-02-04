@@ -17,4 +17,6 @@ urlpatterns = [
     # принимает запрос на дружбу и добавляет в друзья
     path('request-to-group-room/', views.RequestToGroupRoom.as_view(), name="requests-to-group-room"),  #
     path('create-group-room/', views.CreateGroupRoom.as_view(), name="create-group-room"),  #
+    path('logout/', views.LogoutAccount, name="logout"),  #
+
 ]

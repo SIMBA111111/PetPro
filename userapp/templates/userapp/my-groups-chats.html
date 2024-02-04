@@ -3,30 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+                    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Чтобы убедиться, что заголовок отображается поверх остального содержимого */
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chat-item {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-item:hover {
+            background-color: #f0f0f0;
+        }
+
+
+    </style>
 </head>
 <body>
-<div>
-    <div>Im - {{ user }}</div>
-    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
-    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
-    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
-    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
-    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
-    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+<header>
+    <div class="buttons">
+        <div>Im - {{ user }}</div>
+        <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+        <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+        <button onclick="location.href='{% url 'register' %}'">РЕГИСТРАЦИЯ</button>
+        <button onclick="location.href='{% url 'logout' %}'">ВЫХОД</button>
+    </div>
+</header>
 
-</div>
 <br>
 
-
-{% for group_chat in group_chats %}
-<div onclick="location.pathname = '/chat/group/' + {{group_chat.id}} + '/'" id="group-chat-name">
-    {{group_chat.name}}
+<div class="chat-list">
+    {% for group_chat in group_chats %}
+    <div onclick="location.pathname = '/chat/group/' + {{group_chat.id}} + '/'" class="chat-item">
+        {{group_chat.name}}
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
-
-
+<br>
 <form method="get" action="{% url 'create-group-room' %}">
     <button>Создать новый чат</button>
 </form>

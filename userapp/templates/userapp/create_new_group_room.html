@@ -3,6 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .friend-action-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #3498db;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+
+        .friend-action-form:hover {
+            background-color: #ecf0f1;
+        }
+
+        .friend-action-form:active {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+
+        input[type="text"] {
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 
@@ -11,48 +67,7 @@
     <div>Введите название чата:</div>
     <input type="text" name="group_name">
     <button type="submit">Создать</button>
-
 </form>
-
-
-<!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>-->
-<!--<script>-->
-<!--    $(document).ready(function() {-->
-<!--        $(".friend-action-form").on("click", ".friend-action-btn", function(event) {-->
-<!--            event.preventDefault();-->
-<!---->
-<!--            var fromUser = $(this).closest(".friend-action-form").data("from-user");-->
-<!--            var GroupChatName = $(this).closest(".friend-action-form").data("group-chat-name");-->
-<!--            var datetime = $(this).closest(".friend-action-form").data("datetime");-->
-<!--            var id_request = $(this).closest(".friend-action-form").data("id");-->
-<!--            var actionType = $(this).data("action");-->
-<!---->
-<!--            $.ajax({-->
-<!--                url: "/request-to-group-room/",  // Замените на ваш реальный URL-адрес API-->
-<!--                type: "POST",-->
-<!--                data: {-->
-<!--                    csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),-->
-<!--                    from_user: fromUser,-->
-<!--                    id_request: id_request,-->
-<!--                    action_type: actionType,-->
-<!--                    group_chat_name: GroupChatName-->
-<!--                },-->
-<!--                success: function(response) {-->
-<!--                    // Обработка успешного ответа от сервера-->
-<!--                    console.log(response);-->
-<!--                },-->
-<!--                error: function(error) {-->
-<!--                    // Обработка ошибки-->
-<!--                    console.error(error);-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!--    });-->
-<!---->
-<!---->
-<!---->
-<!--</script>-->
-
 
 </body>
 </html>

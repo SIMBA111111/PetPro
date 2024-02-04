@@ -3,29 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <title>AnyProfile</title>
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Чтобы убедиться, что заголовок отображается поверх остального содержимого */
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        #room-name-submit, #add-to-friend-btn {
+
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
 <body>
+<header>
+    <div class="buttons">
+        <div>Im - {{ user }}</div>
+        <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+        <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+        <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+        <button onclick="location.href='{% url 'logout' %}'">ВЫХОД</button>
 
-<div>
-    <div>Im - {{ user }}</div>
-    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
-    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
-    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
-    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
-    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
-    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
+    </div>
+</header>
 
-</div>
 <br>
-
 Friend name - {{username_other}}
 
+{% if not is_friend %}
 <form id="add-to-friend-form" method="post" action="{% url 'profile' username=username_other %}">
     {% csrf_token %}
     <button id="add-to-friend-btn">Добавить в друзья</button>
 </form>
+{% endif %}
 
 <input id="room-name-submit" type="button" value="Открыть чат">
 
@@ -55,6 +113,14 @@ Friend name - {{username_other}}
 <!--            var roomName = document.querySelector('#room-name-input').value;-->
             window.location.pathname = '/chat/' + chat_number + '/';
         };
+
+
+
+
+
+
+
+
 
 
 

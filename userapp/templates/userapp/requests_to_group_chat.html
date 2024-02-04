@@ -3,37 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <title>Requests To Group Chat</title>
+    <style>
+                   body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Чтобы убедиться, что заголовок отображается поверх остального содержимого */
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chat-item {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .chat-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .friend-action-form {
+            margin-top: 20px;
+        }
+
+        .friend-action-btn {
+            padding: 5px 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .friend-action-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
 </head>
 <body>
+<header>
+    <div class="buttons">
+        <div>Im - {{ user }}</div>
+        <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+        <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+        <button onclick="location.href='{% url 'register' %}'">РЕГИСТРАЦИЯ</button>
+        <button onclick="location.href='{% url 'logout' %}'">ВЫХОД</button>
+    </div>
+    </div>
+</header>
 
-<div>
-    <div>Im - {{ user }}</div>
-    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
-    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
-    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
-    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
-    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
-    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
-
-</div>
 <br>
 
+<div class="chat-list">
+    {% for dat in data %}
+    <div>
+        <div>название чата: {{dat.group_chat_name.name}}</div>
+        <div>от кого: {{dat.from_user}}</div>
 
-{% for dat in data %}
-<div>название чата: {{dat.group_chat_name.name}}</div>
-<div>от кого: {{dat.from_user}}</div>
-
-<form class="friend-action-form" data-from-user="{{ dat.from_user }}"
-      data-id="{{ dat.id }}" data-group-chat-name="{{dat.group_chat_name}}">
-    {% csrf_token %}
-    <button type="button" class="friend-action-btn" data-action="accept">Принять</button>
-    <button type="button" class="friend-action-btn" data-action="reject">Отклонить</button>
-</form>
-
-{% endfor %}
-
+        <form class="friend-action-form" data-from-user="{{ dat.from_user }}"
+              data-id="{{ dat.id }}" data-group-chat-name="{{dat.group_chat_name}}">
+            {% csrf_token %}
+            <button type="button" class="friend-action-btn" data-action="accept">Принять</button>
+            <button type="button" class="friend-action-btn" data-action="reject">Отклонить</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
@@ -43,7 +128,6 @@
 
             var fromUser = $(this).closest(".friend-action-form").data("from-user");
             var GroupChatName = $(this).closest(".friend-action-form").data("group-chat-name");
-<!--            var datetime = $(this).closest(".friend-action-form").data("datetime");-->
             var id_request = $(this).closest(".friend-action-form").data("id");
             var actionType = $(this).data("action");
 
@@ -68,7 +152,6 @@
             });
         });
     });
-
 
 
 </script>

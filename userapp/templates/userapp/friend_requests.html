@@ -2,37 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>friend requests</title>
+    <title>Friend Requests</title>
+    <style>
+                   body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Чтобы убедиться, что заголовок отображается поверх остального содержимого */
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .buttons {
+            text-align: center;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .friend-request {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .friend-action-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-
-<div>
+<header>
+    <div class="buttons">
     <div>Im - {{ user }}</div>
-    <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
-    <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
-    <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
-    <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
-    <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
-    <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
-    <button onclick="location.href='{% url 'register' %}'">РЕГИСТАРЦИЯ</button>
-</div>
 
+        <button onclick="location.href='{% url 'users-list' %}'">Все люди</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">Друзья</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">Запросы в друзья</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">Чаты</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">Групповые чаты</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">Приглашения в чат</button>
+        <button onclick="location.href='{% url 'login' %}'">Авторизация</button>
+        <button onclick="location.href='{% url 'register' %}'">Регистрация</button>
+        <button onclick="location.href='{% url 'logout' %}'">ВЫХОД</button>
+
+    </div>
+</header>
 
 {% for d in data %}
+<div class="friend-request">
+    <div>От: {{ d.from_user }}</div>
+    <div>Дата: {{ d.datetime }}</div>
+<!--    <div>ID запроса: {{ d.id }}</div>-->
 
-<div>{{ d.from_user }}</div>
-<div>{{ d.datetime }}</div>
-<div>{{ d.id }}</div>
-
-<form class="friend-action-form" data-from-user="{{ d.from_user }}" data-datetime="{{ d.datetime }}"
-      data-id="{{ d.id }}">
-    {% csrf_token %}
-    <button type="button" class="friend-action-btn" data-action="accept">Принять</button>
-    <button type="button" class="friend-action-btn" data-action="reject">Отклонить</button>
-</form>
-
+    <form class="friend-action-form" data-from-user="{{ d.from_user }}" data-datetime="{{ d.datetime }}"
+          data-id="{{ d.id }}">
+        {% csrf_token %}
+        <button type="button" class="friend-action-btn" data-action="accept">Принять</button>
+        <button type="button" class="friend-action-btn" data-action="reject">Отклонить</button>
+    </form>
+</div>
 {% endfor %}
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -67,7 +128,6 @@
             });
         });
     });
-
 </script>
 
 </body>
