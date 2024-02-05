@@ -12,6 +12,7 @@ urlpatterns = [
     path('qw/<int:id>', views.GetFriendRequestsAPIVIEW.as_view(), name="requests-fr---"),
     # выводит запросы на дружбу определённого юзера
     path('profile/<str:username>', views.SendFriendRequestAPIVIEW.as_view(), name="profile"),
+    path('profile/delete/<str:username>', views.DeleteFriend.as_view(), name="delete-friend"),
     # отправляет запрос на дружбу от авторизированного юзера выбранному
     path('accept/', views.AcceptFriendRequest.as_view(), name="requests-fr"),
     # принимает запрос на дружбу и добавляет в друзья

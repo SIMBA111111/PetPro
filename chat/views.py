@@ -1,6 +1,7 @@
 from urllib.parse import parse_qs
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import generic
@@ -16,11 +17,12 @@ def index(request):
 
 
 def room(request, room_name):
-    print("личный чат")
-    print(request.user)
     current_chat = ChatModel.objects.get(id=room_name)
-    messages = current_chat.chat_name_messages.select_related("author").all()
-    return render(request, "chat/room.html", {"room_name": room_name, "messages": messages})
+    if current_chat.username_two == request.user or current_chat.username_one == request.user:
+        messages = current_chat.chat_name_messages.select_related("author").all()
+        return render(request, "chat/room.html", {"room_name": room_name, "messages": messages})
+    else:
+        return HttpResponse("Нет доступа к этому чату", status=403)
 
 
 def group_room(request, group_room_name):

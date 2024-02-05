@@ -47,7 +47,6 @@ class UsersAllAPIVIEW(APIView):
     queryset = User.objects.all()
     serializer_class = serializers.UsersAllSerializers
 
-
     def get(self, request, *args, **kwargs):
         if isinstance(request.user, AnonymousUser):
             return redirect("login")
@@ -64,9 +63,7 @@ class GetAllFriendsAllUsersAPIVIEW(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         friends = models.FriendshipModel.objects.select_related("id_other_user").filter(id_user=request.user.id)
-        # friends_serialized = serializers.FriendshipSerializer(friends, many=True)
         return render(request, "userapp/my_friends.html", context={"friends": friends})
-        # return Response(data={"friends": friends_serialized.data})
 
 
 # Посмотреть запросы на дружбу опредлённого юзера
@@ -77,7 +74,7 @@ class GetFriendRequestsAPIVIEW(generics.RetrieveAPIView):
 
 
 # Отправить заявку в друзья
-class SendFriendRequestAPIVIEW(generics.ListCreateAPIView):
+class SendFriendRequestAPIVIEW(APIView):
     queryset = None
     serializer_class = serializers.ToUserFriendRequestSerializer
     lookup_field = "username"
@@ -123,7 +120,31 @@ class SendFriendRequestAPIVIEW(generics.ListCreateAPIView):
         obj = models.FriendRequests.objects.create(to_user=to_user,
                                                    from_user=from_user,
                                                    )
-        return redirect("users-list")
+        return redirect("all-my-fr")
+
+    # def delete(self, request, *args, **kwargs):
+    #     return redirect("users-list")
+
+
+class DeleteFriend(APIView):
+    def post(self, request, *args, **kwargs):
+        username_other = kwargs["username"]
+
+        user_other = User.objects.get(username=username_other)
+
+        # получаю 1ый объект дружбы и удаляю
+        x = FriendshipModel.objects.get(id_other_user=user_other,
+                                        id_user=request.user).delete()
+
+        # получаю 2ой объект дружбы и удаляю
+        x2 = FriendshipModel.objects.get(id_other_user=request.user,
+                                         id_user=user_other).delete()
+
+        # получаю запрос на дружбу и удаляю его
+        x3 = FriendRequests.objects.filter(Q(to_user=user_other) | Q(to_user=request.user),
+                                           Q(from_user=user_other) | Q(from_user=request.user)).delete()
+
+        return redirect("all-my-fr")
 
 
 # Подтвердить/показать заявку в друзья
@@ -169,7 +190,7 @@ class Login(FormView):
             login(request, user)
             return redirect("users-list")
         else:
-            return Response()
+            return HttpResponseNotFound()
 
 
 class Register(CreateView):
