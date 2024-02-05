@@ -128,6 +128,11 @@ ENV/
 env.bak/
 venv.bak/
 
+#.migrations
+#.migrations
+migrations/*
+#/migrations/
+
 # Spyder project settings
 .spyderproject
 .spyproject
