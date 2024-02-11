@@ -19,8 +19,7 @@ from userapp import serializers
 from userapp import models
 from chat.models import ChatModel, GroupChatModel, RequestToAddGroupChatModel
 from userapp.models import FriendRequests, FriendshipModel
-
-# from userapp.views import RequestToGroupRoom
+from userapp.paginations import UserListPagination
 
 User = get_user_model()
 
@@ -43,9 +42,8 @@ class AllMyChats(ListView):
         return render(request, "userapp/my-chats.html", context={"chats": chats})
 
 
-class UsersAllAPIVIEW(APIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.UsersAllSerializers
+class UsersAllAPIVIEW(ListView):
+    queryset = None
 
     def get(self, request, *args, **kwargs):
         if isinstance(request.user, AnonymousUser):
@@ -56,12 +54,12 @@ class UsersAllAPIVIEW(APIView):
 
 
 # Посмотреть всех друзей аутентифицированного юзера
-class GetAllFriendsAllUsersAPIVIEW(generics.ListAPIView):
+class GetAllMyFriendsAPIVIEW(generics.ListAPIView):
     queryset = None
     serializer_class = serializers.GetFriendSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: int, *args, **kwargs):
         friends = models.FriendshipModel.objects.select_related("id_other_user").filter(id_user=request.user.id)
         return render(request, "userapp/my_friends.html", context={"friends": friends})
 
@@ -117,13 +115,10 @@ class SendFriendRequestAPIVIEW(APIView):
         if friendship_exist.exists():
             return HttpResponseNotFound()
 
-        obj = models.FriendRequests.objects.create(to_user=to_user,
-                                                   from_user=from_user,
-                                                   )
+        models.FriendRequests.objects.create(to_user=to_user,
+                                             from_user=from_user,
+                                             )
         return redirect("all-my-fr")
-
-    # def delete(self, request, *args, **kwargs):
-    #     return redirect("users-list")
 
 
 class DeleteFriend(APIView):
@@ -133,16 +128,16 @@ class DeleteFriend(APIView):
         user_other = User.objects.get(username=username_other)
 
         # получаю 1ый объект дружбы и удаляю
-        x = FriendshipModel.objects.get(id_other_user=user_other,
-                                        id_user=request.user).delete()
+        FriendshipModel.objects.get(id_other_user=user_other,
+                                    id_user=request.user).delete()
 
         # получаю 2ой объект дружбы и удаляю
-        x2 = FriendshipModel.objects.get(id_other_user=request.user,
-                                         id_user=user_other).delete()
+        FriendshipModel.objects.get(id_other_user=request.user,
+                                    id_user=user_other).delete()
 
         # получаю запрос на дружбу и удаляю его
-        x3 = FriendRequests.objects.filter(Q(to_user=user_other) | Q(to_user=request.user),
-                                           Q(from_user=user_other) | Q(from_user=request.user)).delete()
+        FriendRequests.objects.filter(Q(to_user=user_other) | Q(to_user=request.user),
+                                      Q(from_user=user_other) | Q(from_user=request.user)).delete()
 
         return redirect("all-my-fr")
 
@@ -236,6 +231,6 @@ class CreateGroupRoom(View):
         return redirect("my-group-chats")
 
 
-def LogoutAccount(request):
+def logout_account(request):
     logout(request)
     return redirect("login")

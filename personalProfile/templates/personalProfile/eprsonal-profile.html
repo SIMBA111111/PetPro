@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+</head>
+<body>
+
+<header>
+    <div>Im - {{ user }}</div>
+    <div class="buttons">
+        <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
+        <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'requests-fr' %}'">ЗАПРОСЫ В ДРУЗЬЯ</button>
+        <button onclick="location.href='{% url 'my-chats' %}'">ЧАТЫ</button>
+        <button onclick="location.href='{% url 'my-group-chats' %}'">ГРУППОВЫЕ ЧАТЫ</button>
+        <button onclick="location.href='{% url 'requests-to-group-room' %}'">ПРИГЛАШЕНИЯ В ЧАТ</button>
+        <button onclick="location.href='{% url 'login' %}'">АВТОРИЗАЦИЯ</button>
+        <button onclick="location.href='{% url 'register' %}'">РЕГИСТРАЦИЯ</button>
+    </div>
+</header>
+
+<img src="{{ user.avatar.url }}">
+
+
+<form action="{% url 'avatar' %}" method="post">
+    {% csrf_token %}
+    <input value="{{user.middle_name}}" name="Surname" type="text" placeholder="Фамилия">
+    <input value="{{user.first_name}}" name="Name" type="text" placeholder="Имя">
+    <input value="{{user.last_name}}" name="Second-surname" type="text" placeholder="Отчество">
+    <input value="{{user.description}}" name="description" type="text" placeholder="Добавьте описание">
+    <!--    <input value="{{user.email}}" name="email" type="email" placeholder="Почта">-->
+    <!--    <input value="{{user.phone_number}}" name="phone_number" type="number" placeholder="Номер телефона">-->
+    <input type="submit" value="Изменить">
+</form>
+
+<!--<form action="{% url 'avatar' %}" method="post">-->
+<!--    {% csrf_token %}-->
+<!--    -->
+<!--</form>-->
+
+
+</body>
+</html>

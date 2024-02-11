@@ -67,7 +67,7 @@
 <header>
     <div class="buttons">
     <div>Im - {{ user }}</div>
-
+        <button onclick="location.href='{% url 'avatar' %}'">Мой профиль</button>
         <button onclick="location.href='{% url 'users-list' %}'">Все люди</button>
         <button onclick="location.href='{% url 'all-my-fr' %}'">Друзья</button>
         <button onclick="location.href='{% url 'requests-fr' %}'">Запросы в друзья</button>
