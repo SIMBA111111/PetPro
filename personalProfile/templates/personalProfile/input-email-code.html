@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="{% url 'set-email' %}" method="post">
+    {% csrf_token %}
+    <input name="code" type="text" placeholder="введите код">
+    <input type="submit" value="Привязать">
+</form>
+
+</body>
+</html>

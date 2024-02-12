@@ -25,14 +25,27 @@
 
 <form action="{% url 'avatar' %}" method="post">
     {% csrf_token %}
+    <label>Фамилия: </label>
     <input value="{{user.middle_name}}" name="Surname" type="text" placeholder="Фамилия">
+    <br>
+    <label>Имя: </label>
     <input value="{{user.first_name}}" name="Name" type="text" placeholder="Имя">
+    <br>
+    <label>Отчество: </label>
     <input value="{{user.last_name}}" name="Second-surname" type="text" placeholder="Отчество">
+    <br>
+    <label>Описание профиля: </label>
     <input value="{{user.description}}" name="description" type="text" placeholder="Добавьте описание">
-    <!--    <input value="{{user.email}}" name="email" type="email" placeholder="Почта">-->
-    <!--    <input value="{{user.phone_number}}" name="phone_number" type="number" placeholder="Номер телефона">-->
+    <br>
     <input type="submit" value="Изменить">
 </form>
+
+<form target="_blank" method="get" action="{% url 'email-code' %}">
+    {% csrf_token %}
+    <input type="submit" value="Привязать почту">
+</form>
+
+
 
 <!--<form action="{% url 'avatar' %}" method="post">-->
 <!--    {% csrf_token %}-->
