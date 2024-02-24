@@ -53,6 +53,7 @@ INSTALLED_APPS += [
     'rest_framework.authtoken',
     "debug_toolbar",
     "phonenumber_field",
+    "django_pdb",
 ]
 
 MIDDLEWARE = [

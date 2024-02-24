@@ -23,8 +23,8 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('login', views.Login.as_view(), name='login'),  # аутентификация
-    path('register', views.Register.as_view(), name='register'),  # аутентификация
+    path('login/', views.Login.as_view(), name='login'),  # аутентификация
+    path('register/', views.Register.as_view(), name='register'),  # аутентификация
     path('logout/', views.logout_account, name="logout"),  #
 ]
 

@@ -20,7 +20,11 @@
     </div>
 </header>
 
+{% if user.avatar %}
 <img src="{{ user.avatar.url }}">
+{% else %}
+<input type="file" value="ввести">
+{% endif %}
 
 
 <form action="{% url 'avatar' %}" method="post">
@@ -44,7 +48,6 @@
     {% csrf_token %}
     <input type="submit" value="Привязать почту">
 </form>
-
 
 
 <!--<form action="{% url 'avatar' %}" method="post">-->

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.models import AnonymousUser
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
@@ -37,6 +37,9 @@ class AllMyChats(ListView):
     queryset = None
 
     def get(self, request, *args, **kwargs):
+        import pdb
+        # pdb.set_trace()
+
         chats = ChatModel.objects.select_related("username_two", "username_one").filter(
             Q(username_one__username=request.user) | Q(username_two__username=request.user))
         return render(request, "userapp/my-chats.html", context={"chats": chats})
@@ -185,7 +188,7 @@ class Login(FormView):
             login(request, user)
             return redirect("users-list")
         else:
-            return HttpResponseNotFound()
+            return HttpResponse("ошибка")
 
 
 class Register(CreateView):

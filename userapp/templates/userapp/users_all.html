@@ -70,12 +70,18 @@
         }
 
 
+
+
+
+
+
+
     </style>
 </head>
 <body>
 <header>
     <div class="buttons">
-    <div>Im - {{ user }}</div>
+        <div>Im - {{ user }}</div>
         <button onclick="location.href='{% url 'avatar' %}'">Мой профиль</button>
         <button onclick="location.href='{% url 'users-list' %}'">ВСЕ ЛЮДИ</button>
         <button onclick="location.href='{% url 'all-my-fr' %}'">ДРУЗЬЯ</button>
@@ -90,13 +96,15 @@
 </header>
 <br>
 
-<div class="users-list">
-    {% for user in users %}
-    <a href="{% url 'profile' username=user.username %}">
-        <div class="user">{{ user.username }}</div>
-    </a>
-    {% endfor %}
-</div>
+<div class="users-list"></div>
+
+{% for user in users %}
+    {% if user.username %}
+        <a href="{% url 'profile' username=user.username %}">
+            <div class="user">{{ user }}</div>
+        </a>
+    {% endif %}
+{% endfor %}
 
 </body>
 </html>
